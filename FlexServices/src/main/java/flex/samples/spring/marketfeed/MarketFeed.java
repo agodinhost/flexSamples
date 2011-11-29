@@ -30,7 +30,6 @@ public class MarketFeed {
    private static FeedThread     thread;
 
    private final MessageTemplate template;
-
    private final List< Stock >   stockList;
 
    public MarketFeed( MessageTemplate template, Resource filePath ) throws IOException {

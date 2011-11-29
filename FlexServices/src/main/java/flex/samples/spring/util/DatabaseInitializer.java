@@ -18,14 +18,18 @@ import flex.samples.employeedirectory.Employee;
 import flex.samples.spring.employeedirectory.EmployeeDAO;
 
 /**
- * @author Christophe Coenraets
+ * Simple database initializer.
+ * 
+ * This class parses the employees.xml file and insert it's content
+ * into our h2 database.
+ * 
+ * @author Christophe Coenraets.
  */
 @Component
 public class DatabaseInitializer {
 
+   private final EmployeeDAO  employeeDAO;
    private final JdbcTemplate template;
-
-   private EmployeeDAO        employeeDAO;
 
    @Autowired
    public DatabaseInitializer( DataSource ds, EmployeeDAO employeeDAO ) {
