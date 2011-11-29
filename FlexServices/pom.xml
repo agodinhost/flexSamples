@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.gec.flexServices</groupId>
+	<artifactId>flexServices</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<properties>
+		<!-- Explicitly declaring the source encoding eliminates the following 
+			= message: [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
+			= resources, i.e. build is platform dependent! -->
+		<project.build.sourceEncoding>${code.encoding}</project.build.sourceEncoding>
+		<java.version>1.6</java.version>
+		<code.encoding>ISO-8859-1</code.encoding>
+
+		<slf4j.version>1.6.1</slf4j.version>
+		<logback.version>0.9.29</logback.version>
+		<spring.version>3.0.6.RELEASE</spring.version>
+		<spring.security.version>3.0.7.RELEASE</spring.security.version>
+		<javax.annotation.version>1.0</javax.annotation.version>
+
+		<spring.flex.version>1.5.2.RELEASE</spring.flex.version>
+		<blazeds.version>4.5.0.0-SNAPSHOT</blazeds.version>
+        <flex.sdk.version>4.5.1.21328</flex.sdk.version>
+		<flex.version></flex.version>
+		
+		<hibernate.version>3.6.5.Final</hibernate.version>
+		<h2.version>1.3.161</h2.version>
+		<mysql.version>5.1.17</mysql.version>
+
+		<junit.version>4.8.2</junit.version>
+	</properties>
+
+	<build>
+		<finalName>flexServices</finalName>
+
+		<plugins>
+			<!-- The Compiler Plugin is used to compile the sources of your project. -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${code.encoding}</encoding>
+				</configuration>
+			</plugin>
+
+			<!-- The WAR Plugin is responsible for collecting all artifact dependencies, 
+				= classes and resources of the web application and packaging them into a 
+				= web application archive. -->
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<version>2.1.1</version>
+				<configuration>
+					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+				</configuration>
+			</plugin>
+
+			<!-- The Tomcat Maven Plugin provides goals to manipulate WAR projects 
+				= within the Tomcat servlet container (@see README.txt). -->
+			<plugin>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<groupId>org.codehaus.mojo</groupId>
+				<version>1.1</version>
+				<configuration>
+					<url>http://localhost:8080/manager/text</url>
+					<server>tomcatLocal</server>
+					<path>/flexServices</path>
+				</configuration>
+			</plugin>
+
+			<!-- Eclipse plugin - download source and JavaDoc jars automatically -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<wtpversion>2.0</wtpversion>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!-- SLF4J - the system source code is binded ONLY to this API.
+		<dependency>
+			<artifactId>slf4j-api</artifactId>
+			<groupId>org.slf4j</groupId>
+			<version>${slf4j.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		-->
+
+		<!-- LogBack Core. 
+		<dependency>
+			<artifactId>logback-core</artifactId>
+			<groupId>ch.qos.logback</groupId>
+			<version>${logback.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		-->
+		<!-- LogBack Classic implementation. 
+		<dependency>
+			<artifactId>logback-classic</artifactId>
+			<groupId>ch.qos.logback</groupId>
+			<version>${logback.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		-->
+
+		<!-- SLF4J Bridge to JCL (commons logging sucks). 
+		<dependency>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<groupId>org.slf4j</groupId>
+			<version>${slf4j.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		-->
+
+		<!-- Spring Core. -->
+		<dependency>
+			<artifactId>spring-core</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+			<!-- 
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+			-->
+		</dependency>
+
+		<!-- Spring Web. -->
+		<dependency>
+			<artifactId>spring-web</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring Web MVC. -->
+		<dependency>
+			<artifactId>spring-webmvc</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring Web MVC Portlet. -->
+		<dependency>
+			<artifactId>spring-webmvc-portlet</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring ORM. -->
+		<dependency>
+			<artifactId>spring-orm</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring Object/XML Mapping support. -->
+		<dependency>
+			<artifactId>spring-oxm</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring Conext Support. -->
+		<dependency>
+			<artifactId>spring-context-support</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring Aspects. -->
+		<dependency>
+			<artifactId>spring-aspects</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring JMS. -->
+		<dependency>
+			<artifactId>spring-jms</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring Test. -->
+		<dependency>
+			<artifactId>spring-test</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring Instrument. -->
+		<dependency>
+			<artifactId>spring-instrument</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring Instrument for Tomcat. -->
+		<dependency>
+			<artifactId>spring-instrument-tomcat</artifactId>
+			<groupId>org.springframework</groupId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring Security Core.
+		<dependency>
+			<artifactId>spring-security-core</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<version>${spring.security.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		-->
+		<!-- Spring Security Config.
+		<dependency>
+			<artifactId>spring-security-config</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<version>${spring.security.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		-->
+		<!-- Spring Security Web.
+		<dependency>
+			<artifactId>spring-security-web</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<version>${spring.security.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		-->
+		<!-- JSR250-api (javax.annotation.security).
+		<dependency>
+			<artifactId>jsr250-api</artifactId>
+			<groupId>javax.annotation</groupId>
+			<version>${javax.annotation.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		-->
+
+		<!-- Used by Spring AOP. -->
+		<dependency>
+    		<groupId>cglib</groupId>
+    		<artifactId>cglib</artifactId>
+    		<version>2.2.2</version>
+		</dependency>
+
+		<!-- Sun Servlet 2.5 implementation. DO NOT DEPLOY THIS jar. -->
+		<dependency>
+			<artifactId>servlet-api</artifactId>
+			<groupId>javax.servlet</groupId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Sun JSP 2.1 implementation. DO NOT DEPLOY THIS jar. -->
+		<dependency>
+			<artifactId>jsp-api</artifactId>
+			<groupId>javax.servlet.jsp</groupId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Sun Tag Library 1.2 implementation. DO NOT DEPLOY THIS jar. -->
+		<dependency>
+			<artifactId>jstl</artifactId>
+			<groupId>javax.servlet</groupId>
+			<version>1.2</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Spring Flex BlazeDS library. -->
+		<dependency>
+			<groupId>org.springframework.flex</groupId>
+			<artifactId>spring-flex-core</artifactId>
+			<version>${spring.flex.version}</version>
+			<scope>compile</scope>
+			<exclusions>
+				<!-- 
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+				-->
+				<exclusion>
+					<artifactId>cglib-nodep</artifactId>
+					<groupId>cglib</groupId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.adobe.blazeds</groupId>
+					<artifactId>blazeds-common</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.adobe.blazeds</groupId>
+					<artifactId>blazeds-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.adobe.blazeds</groupId>
+					<artifactId>blazeds-remoting</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.adobe.blazeds</groupId>
+					<artifactId>blazeds-proxy</artifactId>
+				</exclusion>
+
+				<!-- 
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context-support</artifactId>
+				</exclusion>
+				 -->
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-webmvc</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- BlazeDS library. -->
+		<dependency>
+			<groupId>com.adobe.blazeds</groupId>
+			<artifactId>flex-messaging-remoting</artifactId>
+			<version>${blazeds.version}</version>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- BlazeDS library. -->
+		<dependency>
+			<groupId>com.adobe.blazeds</groupId>
+			<artifactId>flex-messaging-proxy</artifactId>
+			<version>${blazeds.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<!-- BlazeDS library. -->
+		<dependency>
+			<groupId>com.adobe.blazeds</groupId>
+			<artifactId>flex-messaging-opt-tomcat7</artifactId>
+			<version>${blazeds.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Flex RDS library.
+		     Only for development time (for the Flex Builder Data/Services view). 
+		<dependency>
+			<groupId>com.adobe.flex</groupId>
+			<artifactId>flex-rds</artifactId>
+			<version>${flex.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		-->
+
+		<!-- Hibernate core.
+		<dependency>
+			<artifactId>hibernate-core</artifactId>
+			<groupId>org.hibernate</groupId>
+			<version>${hibernate.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		-->
+		<!-- Hibernate entity manager.
+		<dependency>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<groupId>org.hibernate</groupId>
+			<version>${hibernate.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		-->
+		<!-- Hibernate c3p0.
+		<dependency>
+			<artifactId>hibernate-c3p0</artifactId>
+			<groupId>org.hibernate</groupId>
+			<version>${hibernate.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		-->
+
+		<!-- H2 Embedded Database. -->
+		<dependency>
+			<artifactId>h2</artifactId>
+			<groupId>com.h2database</groupId>
+			<version>${h2.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- MySQL jdbc connector.
+		<dependency>
+			<artifactId>mysql-connector-java</artifactId>
+			<groupId>mysql</groupId>
+			<version>${mysql.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		-->
+
+		<!-- jUnit. -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<!-- Repository for Spring Flex Core. -->
+		<repository>
+			<id>mvnrepository</id>
+			<url>http://mvnrepository.com</url>
+		</repository>
+
+		<!-- Spring Flex repository. -->
+		<repository>
+			<id>Spring Releases</id>
+			<name>Spring External Repository</name>
+			<url>http://maven.springframework.org/release</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+
+		<repository>
+			<id>sonatype-repo</id>
+			<url>https://oss.sonatype.org/content/repositories/springsource-milestones</url>
+			<layout>default</layout>
+		</repository>
+
+		<repository>
+			<id>repo1-maven2</id>
+			<url>http://repo1.maven.org/maven2</url>
+			<name>Maven repository</name>
+		</repository>
+
+		<repository>
+			<id>java-net-maven2</id>
+			<url>http://download.java.net/maven/2/</url>
+			<layout>default</layout>
+		</repository>
+
+	</repositories>
+</project>
