@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:parsley="http://www.spicefactory.org/parsley"
+		xmlns:s="library://ns.adobe.com/flex/spark">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.rpc.remoting.RemoteObject;
+			
+			public var service:RemoteObject;
+			
+			protected function findByName(keyStr:String):void
+			{
+				responder.token = service.findByName(keyStr);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+
+		<parsley:FastInject property="service" type="{RemoteObject}"/>
+
+		<s:CallResponder id="responder" result="data=responder.lastResult"/>
+
+	</fx:Declarations>
+	
+	<s:navigationContent/>
+	
+	<s:titleContent>
+		<s:TextInput id="key" width="100%" enter="findByName(key.text)" prompt="Enter search key"/>
+	</s:titleContent>
+	
+	<s:actionContent>
+		<s:Button label="Search" click="findByName(key.text)"/>		
+	</s:actionContent>
+	
+	<s:List id="list" width="100%" height="100%"
+			change="navigator.pushView(EmployeeDetails, list.selectedItem)" dataProvider="{data}">
+		<s:itemRenderer>
+			<fx:Component>
+				<s:IconItemRenderer label="{data.firstName} {data.lastName}" messageField="title"/>
+			</fx:Component>
+		</s:itemRenderer>
+	</s:List>
+	
+</s:View>
