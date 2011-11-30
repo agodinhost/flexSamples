@@ -20,7 +20,10 @@ import flex.samples.employeedirectory.Employee;
 import flex.samples.employeedirectory.IEmployeetDAO;
 
 /**
- * @author Christophe Coenraets
+ * Spring JDBC DAO Class.
+ * Note that the EmployeeDirectory app calls it as a service too.
+ * 
+ * @author Christophe Coenraets.
  */
 @Service( "employeeService" )
 @RemotingDestination( channels = { "my-amf" } )
@@ -40,27 +43,22 @@ public class EmployeeDAO implements IEmployeetDAO {
    }
 
    public List< Employee > findAll() {
-      return template.query( "SELECT  id, first_name, last_name, title FROM employee ORDER BY first_name, last_name", this.summaryRowMapper );
+      return template.query( SQL_FIND_ALL, summaryRowMapper );
    }
 
    public List< Employee > findByName( String name ) {
-      return template.query( "SELECT id, first_name, last_name, title FROM employee WHERE UPPER(CONCAT(first_name, ' ', last_name)) LIKE ? ORDER BY first_name, last_name", this.summaryRowMapper, "%" + name.toUpperCase() + "%" );
+      return template.query( SQL_FIND_BY_NAME, summaryRowMapper, "%" + name.toUpperCase() + "%" );
    }
 
    public List< Employee > findByManager( int managerId ) {
-      return template.query( "SELECT id, first_name, last_name, title FROM employee WHERE manager_id=? ORDER BY first_name, last_name", this.summaryRowMapper, managerId );
+      return template.query( SQL_FIND_BY_MANAGER, summaryRowMapper, managerId );
    }
 
    public Employee findById( int id ) {
-
-      String sql = "select e.id, e.first_name, e.last_name, e.manager_id, e.title, e.department, e.city, e.office_phone, e.cell_phone, " + //
-            "e.email, e.picture, m.first_name manager_first_name, m.last_name manager_last_name, count(r.id) report_count from employee as e " + //
-            "left join employee m on e.manager_id = m.id " + "left join employee r on e.id = r.manager_id " + "where e.id = ? " + "group by e.id";
-
-      return template.queryForObject( sql, this.rowMapper, id );
+      return template.queryForObject( SQL_FIND_BY_ID, rowMapper, id );
    }
 
-   public Employee create( Employee employee ) {
+   public Employee insert( Employee employee ) {
       Map< String, Object > parameters = new HashMap< String, Object >();
       parameters.put( "first_name", employee.getFirstName() );
       parameters.put( "last_name", employee.getLastName() );
@@ -74,24 +72,26 @@ public class EmployeeDAO implements IEmployeetDAO {
       parameters.put( "cell_phone", employee.getCellPhone() );
       parameters.put( "email", employee.getEmail() );
       parameters.put( "picture", employee.getPicture() );
-      Number id = this.insertContact.executeAndReturnKey( parameters );
+      Number id = insertContact.executeAndReturnKey( parameters );
       employee.setId( id.intValue() );
       return employee;
    }
 
    public boolean update( Employee employee ) {
-      int count = template.update( "UPDATE employee SET first_name=?, last_name=?, title=?, deptartment=?, manager_id=?, city=?, office_phone, cell_phone=?, email=?, picture=? WHERE id=?", //
-            employee.getFirstName(), employee.getLastName(), employee.getTitle(), employee.getDepartment(), employee.getManager().getId(), employee.getCity(), //
-            employee.getOfficePhone(), employee.getCellPhone(), employee.getEmail(), employee.getPicture(), employee.getId() );
+      int count = template.update( SQL_UPDATE, //
+            employee.getFirstName(), employee.getLastName(), employee.getTitle(), //
+            employee.getDepartment(), employee.getManager().getId(), employee.getCity(), //
+            employee.getOfficePhone(), employee.getCellPhone(), employee.getEmail(), //
+            employee.getPicture(), employee.getId() );
       return count == 1;
    }
 
-   public boolean remove( Employee employee ) {
-      int count = template.update( "DELETE FROM employee WHERE id=?", employee.getId() );
+   public boolean delete( Employee employee ) {
+      int count = template.update( SQL_DELETE, employee.getId() );
       return count == 1;
    }
 
-   private static ParameterizedRowMapper< Employee > getSummaryRowMapper() {
+   private static final ParameterizedRowMapper< Employee > getSummaryRowMapper() {
 
       return new ParameterizedRowMapper< Employee >() {
 
@@ -106,7 +106,7 @@ public class EmployeeDAO implements IEmployeetDAO {
       };
    }
 
-   private static ParameterizedRowMapper< Employee > getRowMapper() {
+   private static final ParameterizedRowMapper< Employee > getRowMapper() {
 
       return new ParameterizedRowMapper< Employee >() {
 
@@ -135,4 +135,37 @@ public class EmployeeDAO implements IEmployeetDAO {
          }
       };
    }
+
+   private static final String SQL_FIND_ALL        = "SELECT  id, first_name, last_name, title " + //
+                                                         "FROM employee " + //
+                                                         "ORDER BY first_name, last_name";
+
+   private static final String SQL_FIND_BY_NAME    = "SELECT id, first_name, last_name, title " + //
+                                                         "FROM employee " + //
+                                                         "WHERE UPPER(CONCAT(first_name, ' ', last_name)) " + //
+                                                         "LIKE ? " + //
+                                                         "ORDER BY first_name, last_name";
+
+   private static final String SQL_FIND_BY_MANAGER = "SELECT id, first_name, last_name, title " + //
+                                                         "FROM employee " + //
+                                                         "WHERE manager_id=? " + //
+                                                         "ORDER BY first_name, last_name";
+
+   private static final String SQL_FIND_BY_ID      = "SELECT e.id, e.first_name, e.last_name, e.manager_id, e.title, " + //
+                                                         "e.department, e.city, e.office_phone, e.cell_phone, " + //
+                                                         "e.email, e.picture, m.first_name manager_first_name, " + //
+                                                         "m.last_name manager_last_name, count(r.id) report_count " + //
+                                                         "FROM employee as e " + //
+                                                         "LEFT JOIN employee m on e.manager_id = m.id " + //
+                                                         "LEFT JOIN employee r on e.id = r.manager_id " + //
+                                                         "WHERE e.id = ? " + //
+                                                         "GROUP BY e.id";
+
+   private static final String SQL_UPDATE          = "UPDATE employee SET " + //
+                                                         "first_name=?, last_name=?, title=?, deptartment=?, manager_id=?, " + //
+                                                         "city=?, office_phone, cell_phone=?, email=?, picture=? " + //
+                                                         "WHERE id=?";
+
+   private static final String SQL_DELETE          = "DELETE FROM employee WHERE id=?";
+
 }

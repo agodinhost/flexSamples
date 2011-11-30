@@ -40,7 +40,7 @@ public class DatabaseInitializer {
    }
 
    public void createTableEmployee() {
-      System.out.println( "Creating table EMPLOYEE..." );
+      System.out.println( "Creating table EMPLOYEE ..." );
       String sql = "CREATE TABLE IF NOT EXISTS EMPLOYEE (" + //
             "ID INT AUTO_INCREMENT PRIMARY KEY, " + //
             "FIRST_NAME VARCHAR(50), " + //
@@ -86,7 +86,7 @@ public class DatabaseInitializer {
                manager.setId( getIntValue( node, "managerId" ) );
                employee.setManager( manager );
             }
-            employeeDAO.create( employee );
+            employeeDAO.insert( employee );
          }
       } catch( Exception e ) {
          e.printStackTrace();

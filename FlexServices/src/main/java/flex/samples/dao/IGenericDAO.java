@@ -13,10 +13,10 @@ public interface IGenericDAO< T > {
 
    public T findById( int id );
 
-   public T create( T item );
+   public T insert( T item );
 
    public boolean update( T item );
 
-   public boolean remove( T item );
+   public boolean delete( T item );
 
 }
